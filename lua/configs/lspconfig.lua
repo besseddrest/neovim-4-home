@@ -1,6 +1,6 @@
 require("nvchad.configs.lspconfig").defaults()
 
-local servers = { "html", "cssls", "ts_ls", "jsonls", "markdown_oxide", "qmlls", "dartls", "astro" }
+local servers = { "html", "cssls", "ts_ls", "jsonls", "markdown_oxide", "qmlls", "dartls", "astro", "eslint", "lua_ls", "bashls", "somesass_ls", "sqlls" }
 
 local htmlSettings = {
   cmd = { "vscode-html-language-server", "--stdio" },
@@ -17,7 +17,7 @@ local htmlSettings = {
 local cssSettings = {
   cmd = { "vscode-css-language-server", "--stdio" },
   filetypes = { "css", "scss", "less" },
-  init_options = { provideFormatter = true }, -- needed to enable formatting capabilities
+  init_options = { provideFormatter = true },
   root_markers = { "package.json", ".git" },
   settings = {
     css = { validate = true },
@@ -38,8 +38,21 @@ local tsSettings = {
     "typescript.tsx",
   },
   root_markers = { "tsconfig.json", "jsconfig.json", "package.json", ".git", "manifest.json" },
+  settings = {
+    typescript = {
+      format = {
+        tabSize = 4,
+        indentSize = 4,
+      },
+    },
+    javascript = {
+      format = {
+        tabSize = 4,
+        indentSize = 4,
+      },
+    },
+  },
   handlers = {
-    -- handle rename request for certain code actions like extracting functions / types
     ["_typescript.rename"] = function(_, result, ctx)
       local client = assert(vim.lsp.get_client_by_id(ctx.client_id))
       vim.lsp.util.show_document({
@@ -80,8 +93,6 @@ local tsSettings = {
     end,
   },
   on_attach = function(client, bufnr)
-    -- ts_ls provides `source.*` code actions that apply to the whole file. These only appear in
-    -- `vim.lsp.buf.code_action()` if specified in `context.only`.
     vim.api.nvim_buf_create_user_command(bufnr, "LspTypescriptSourceAction", function()
       local source_actions = vim.tbl_filter(function(action)
         return vim.startswith(action, "source.")
@@ -106,59 +117,146 @@ local jsonSettings = {
 }
 
 local markdownSettings = {
-    cmd = { "markdown-oxide" },
-    filetypes = { "markdown" },
-    root_markers = { ".git", ".obsidian", ".moxide.toml" },
-    filetypes = { "markdown" },
-    cmd = { "markdown-oxide" },
-    on_attach = function(client, bufnr)
-      for _, cmd in ipairs({ "today", "tomorrow", "yesterday" }) do
-        vim.api.nvim_buf_create_user_command(
-          bufnr,
-          "Lsp" .. ("%s"):format(cmd:gsub("^%l", string.upper)),
-          function()
-            command_factory(client, bufnr, cmd)
-          end,
-          {
-            desc = ("Open %s daily note"):format(cmd),
-          }
-        )
-      end
-    end,
-  }
+  cmd = { "markdown-oxide" },
+  filetypes = { "markdown" },
+  root_markers = { ".git", ".obsidian", ".moxide.toml" },
+  on_attach = function(client, bufnr)
+    for _, cmd in ipairs({ "today", "tomorrow", "yesterday" }) do
+      vim.api.nvim_buf_create_user_command(
+        bufnr,
+        "Lsp" .. ("%s"):format(cmd:gsub("^%l", string.upper)),
+        function()
+          command_factory(client, bufnr, cmd)
+        end,
+        {
+          desc = ("Open %s daily note"):format(cmd),
+        }
+      )
+    end
+  end,
+}
+
 local qmlSettings = {
-    cmd = { "qmlls6" },
-    filetypes = { "qml" },
+  cmd = { "qmlls6" },
+  filetypes = { "qml" },
 }
 
 local dartSettings = {
-    cmd = { "dart", "language-server", "--protocol=lsp" },
-    filetypes = { "dart" },
-    root_markers = { "pubspec.yaml" },
-    init_options = {
-        onlyAnalyzeProjectsWithOpenFiles = true,
-        suggestFromUnimportedLibraries = true,
-        closingLabels = true,
-        outline = true,
-        flutterOutline = true,
+  cmd = { "dart", "language-server", "--protocol=lsp" },
+  filetypes = { "dart" },
+  root_markers = { "pubspec.yaml" },
+  init_options = {
+    onlyAnalyzeProjectsWithOpenFiles = true,
+    suggestFromUnimportedLibraries = true,
+    closingLabels = true,
+    outline = true,
+    flutterOutline = true,
+  },
+  settings = {
+    dart = {
+      completeFunctionCalls = true,
+      showTodos = true,
     },
-    settings = {
-        dart = {
-            completeFunctionCalls = true,
-            showTodos = true,
-        },
-    },
+  },
 }
 
 local astroSettings = {
-    cmd = { "astro-ls", "--stdio" },
-    filetypes = { "astro" },
-    root_markers = { "package.json", "tsconfig.json", "jsonconfig.json", ".git" },
-    -- before_init = function(_, config)
-    --     if config.init_options and config.init_options.typescript and not config.init_options.typescript.tsdk then
-    --         config.init_options.typescript.tsdk = util.get_typescript_server_path(config.root_dir)
-    --     end
-    -- end,
+  cmd = { "astro-ls", "--stdio" },
+  filetypes = { "astro" },
+  root_markers = { "package.json", "tsconfig.json", "jsonconfig.json", ".git" },
+}
+
+local eslintSettings = {
+  cmd = { "vscode-eslint-language-server", "--stdio" },
+  filetypes = {
+    "javascript",
+    "javascriptreact",
+    "javascript.jsx",
+    "typescript",
+    "typescriptreact",
+    "typescript.tsx",
+    "vue",
+    "svelte",
+    "astro",
+  },
+  root_markers = {
+    ".eslintrc",
+    ".eslintrc.json",
+    ".eslintrc.js",
+    ".eslintrc.cjs",
+    ".eslintrc.yaml",
+    ".eslintrc.yml",
+    "eslint.config.js",
+    "eslint.config.mjs",
+    "eslint.config.cjs",
+    "package.json",
+  },
+  settings = {
+    validate = "on",
+    packageManager = "npm",
+    useESLintClass = true,
+    experimental = {
+      useFlatConfig = true,
+    },
+    codeAction = {
+      disableRuleComment = {
+        enable = true,
+        location = "separateLine",
+      },
+      showDocumentation = {
+        enable = true,
+      },
+    },
+    format = true,
+  },
+	on_attach = function(client, bufnr)
+		-- Fixing handled by conform.nvim (prettier)
+	end,
+}
+
+local luaSettings = {
+  cmd = { "lua-language-server" },
+  filetypes = { "lua" },
+  root_markers = { ".luarc.json", ".luarc.jsonc", ".git", "selene.toml", "stylua.toml" },
+  settings = {
+    Lua = {
+      diagnostics = {
+        globals = { "vim", "require" },
+      },
+      runtime = {
+        version = "LuaJIT",
+        path = vim.split(package.path, ";"),
+      },
+      workspace = {
+        library = {
+          [vim.fn.expand("$VIMRUNTIME/lua")] = true,
+          [vim.fn.expand("$VIMRUNTIME/lua/vim/lsp")] = true,
+        },
+        checkThirdParty = false,
+      },
+      telemetry = {
+        enable = false,
+      },
+    },
+  },
+}
+
+local bashSettings = {
+  cmd = { "bash-language-server", "start" },
+  filetypes = { "sh", "bash", "zsh" },
+  root_markers = { ".git", "package.json" },
+}
+
+local somesassSettings = {
+  cmd = { "somesass-language-server", "--stdio" },
+  filetypes = { "scss", "sass" },
+  root_markers = { "package.json", ".git" },
+}
+
+local sqlSettings = {
+  cmd = { "sql-language-server", "up", "--method", "stdio" },
+  filetypes = { "sql", "mysql" },
+  root_markers = { ".git", "package.json" },
 }
 
 vim.lsp.config("html", htmlSettings)
@@ -169,43 +267,24 @@ vim.lsp.config("markdown_oxide", markdownSettings)
 vim.lsp.config("qmlls", qmlSettings)
 vim.lsp.config("dartls", dartSettings)
 vim.lsp.config("astro", astroSettings)
+vim.lsp.config("eslint", eslintSettings)
+vim.lsp.config("lua_ls", luaSettings)
+vim.lsp.config("bashls", bashSettings)
+vim.lsp.config("somesass_ls", somesassSettings)
+vim.lsp.config("sqlls", sqlSettings)
 vim.lsp.enable(servers)
 
-local augroup = vim.api.nvim_create_augroup
-local utils = require("utils")
-local buf_map = utils.buf_map
 vim.api.nvim_create_autocmd("LspAttach", {
-    callback = function(args)
-        local client = vim.lsp.get_client_by_id(args.data.client_id)
-        if not client then
-            return
-        end
-        if client:supports_method("textDocument/completion") then
-            vim.lsp.completion.enable(true, client.id, args.buf, { autotrigger = false })
-            vim.cmd("highlight @comment gui=italic cterm=italic")
-        end
-    end,
+  callback = function(args)
+    local client = vim.lsp.get_client_by_id(args.data.client_id)
+    if not client then
+      return
+    end
+    if client:supports_method("textDocument/completion") then
+      vim.lsp.completion.enable(true, client.id, args.buf, { autotrigger = false })
+      vim.cmd("highlight @comment gui=italic cterm=italic")
+    end
+  end,
 })
 
--- not autocmd but find a place for this later
-vim.diagnostic.config({
-  -- virtual_text = true,
-  -- float = true,
-})
-
--- besseddrest autocmds (kinda)
--- vim.api.nvim_create_autocmd("BufLeave", {
--- 	desc = "Prevent <C-h>|<C-w>h from switching specific FileType.",
--- 	pattern = {
--- 		"NvimTree",
--- 	},
--- 	group = augroup("PreventFileTypeSwap", { clear = true }),
--- 	callback = function(event)
--- 		local lhs_list = { "<C-h>", "<C-w>l" }
--- 		buf_map(event.buf, "n", lhs_list, "<nop>")
--- 	end,
--- })
-
--- vim.list_contains();
-
--- to configure lsps f:urther read :h vim.lsp.config
+vim.diagnostic.config({})

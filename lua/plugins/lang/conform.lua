@@ -6,14 +6,14 @@ return {
 			formatters_by_ft = {
 				css = { "prettier" },
 				html = { "prettier" },
-				javascript = { "prettier", "eslint_d" },
-				javascriptreact = { "prettier", "eslint_d" },
+				javascript = { "prettier" },
+				javascriptreact = { "prettier" },
 				json = { "jsonlint" },
 				lua = { "stylua" },
 				mysql = { "sqlfluff" },
 				scss = { "prettier" },
-				typescript = { "prettier", "eslint_d" },
-				typescriptreact = { "prettier", "eslint_d" },
+				typescript = { "prettier" },
+				typescriptreact = { "prettier" },
 			},
 			format_on_save = function(bufnr)
 				if vim.bo[bufnr].filetype == "markdown" then

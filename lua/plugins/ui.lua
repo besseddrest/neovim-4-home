@@ -14,8 +14,7 @@ return {
       require("gitsigns").setup(opts)
     end,
   },
-  -- this is handled by org's prettier/eslint
-  -- { import = "plugins.lang.conform" },
+  { import = "plugins.lang.conform" },
   { import = "plugins.base.mason" },
   {
     "neovim/nvim-lspconfig",
