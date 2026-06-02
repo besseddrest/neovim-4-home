@@ -1,6 +1,6 @@
 require("nvchad.configs.lspconfig").defaults()
 
-local servers = { "html", "cssls", "ts_ls", "jsonls", "markdown_oxide", "qmlls", "dartls", "astro", "eslint", "lua_ls", "bashls", "somesass_ls", "sqlls" }
+local servers = { "html", "cssls", "ts_ls", "jsonls", "markdown_oxide", "qmlls", "dartls", "astro", "eslint", "bashls", "somesass_ls", "sqlls" }
 
 local htmlSettings = {
   cmd = { "vscode-html-language-server", "--stdio" },
