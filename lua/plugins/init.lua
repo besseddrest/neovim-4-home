@@ -22,5 +22,5 @@ return {
 	{ import = "plugins.util.opencode" },
 	{ import = "plugins.util.vim-dadbod" },
 	{ import = "plugins.util.vim-dadbod-ui" },
-	{ import = "plugins.util.completion" },
+	-- { import = "plugins.util.completion" },
 }

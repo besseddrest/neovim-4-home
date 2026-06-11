@@ -32,20 +32,6 @@ local buf_map = utils.buf_map
 -- 	-- float = true,
 -- })
 
--- besseddrest autocmds (kinda)
-vim.api.nvim_create_autocmd("BufLeave", {
-    desc = "Prevent <C-h>|<C-w>h from switching specific FileType.",
-    pattern = {
-        "NvimTree",
-    },
-    group = augroup("PreventFileTypeSwap", { clear = true }),
-    callback = function(event)
-        local lhs_list = { "<C-h>", "<C-w>l" }
-        buf_map(event.buf, "n", lhs_list, "<nop>")
-    end,
-})
-
-
 -- autocmds from gale
 vim.api.nvim_create_autocmd("Filetype", {
     desc = "Prevent <Tab>/<S-Tab> from switching specific buffers.",

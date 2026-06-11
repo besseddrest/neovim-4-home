@@ -99,9 +99,40 @@ map(
 	{ desc = "Nvim Config" }
 )
 map("n", "<leader>T", function()
-	require("nvchad.themes").open({
-		border = true,
-	})
+	local wins_before = {}
+	for _, w in ipairs(vim.api.nvim_list_wins()) do
+		if vim.api.nvim_win_get_config(w).relative ~= "" then
+			wins_before[w] = true
+		end
+	end
+
+	require("nvchad.themes").open({ border = true })
+
+	local picker_win
+	for _, w in ipairs(vim.api.nvim_list_wins()) do
+		if vim.api.nvim_win_get_config(w).relative ~= "" and not wins_before[w] then
+			picker_win = w
+			break
+		end
+	end
+
+	if picker_win then
+		vim.api.nvim_create_autocmd("WinClosed", {
+			pattern = tostring(picker_win),
+			once = true,
+			callback = function()
+				vim.schedule(function()
+					for _, w in ipairs(vim.api.nvim_list_wins()) do
+						local cfg = vim.api.nvim_win_get_config(w)
+						if cfg.relative ~= "" then
+							pcall(vim.api.nvim_win_close, w, true)
+						end
+					end
+					Snacks.dashboard.open()
+				end)
+			end,
+		})
+	end
 end, { desc = "Themes" })
 
 -- Blame

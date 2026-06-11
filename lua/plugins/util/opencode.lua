@@ -1,6 +1,6 @@
 return {
 	"nickjvandyke/opencode.nvim",
-	lazy = false,
+	event = "VeryLazy",
 	version = "*", -- Latest stable release
 	dependencies = {
 		{

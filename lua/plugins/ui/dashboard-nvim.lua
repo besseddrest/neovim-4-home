@@ -22,6 +22,7 @@ local leppard = [[
 
 return {
 	"nvimdev/dashboard-nvim",
+	enabled = false,
 	event = "UIEnter",
 	cmds = { "Dashboard" },
 	config = function()

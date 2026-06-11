@@ -23,7 +23,7 @@ return {
 			end,
 			formatters = {
 				prettier = {
-					prepend_args = { "--tab-width", "4", "--use-tabs", "false" },
+					prepend_args = { "--tab-width", "2", "--use-tabs", "false" },
 				},
 			},
 		})

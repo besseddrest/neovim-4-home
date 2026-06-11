@@ -202,19 +202,6 @@ return {
     },
   keys = {
     {
-      "<leader>F",
-      function()
-        Snacks.picker.files({
-          finder = "files",
-          format = "file",
-          show_empty = true,
-          support_live = true,
-          layout = "ivy",
-        })
-      end,
-      desc = "Find Files",
-    },
-    {
       "<leader>z",
       function()
         Snacks.zen()
