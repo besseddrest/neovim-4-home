@@ -13,14 +13,16 @@ M.buf_map = function(buf, mode, lhs, rhs, opts)
         options = vim.tbl_extend("force", options, opts)
     end
 
+    options.buffer = buf or 0
+
     if M.is_tbl(lhs) then
         ---@cast lhs table
         for _, trigger in ipairs(lhs) do
-            vim.api.nvim_buf_set_keymap(buf or 0, mode, trigger, rhs, options)
+            vim.keymap.set(mode, trigger, rhs, options)
         end
     else
         ---@cast lhs string
-        vim.api.nvim_buf_set_keymap(buf or 0, mode, lhs, rhs, options)
+        vim.keymap.set(mode, lhs, rhs, options)
     end
 end
 

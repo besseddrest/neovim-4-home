@@ -1,6 +1,6 @@
 require("nvchad.configs.lspconfig").defaults()
 
-local servers = { "html", "cssls", "ts_ls", "jsonls", "markdown_oxide", "qmlls", "dartls", "astro", "eslint", "bashls", "somesass_ls", "sqlls" }
+local servers = { "html", "cssls", "ts_ls", "jsonls", "markdown_oxide", "qmlls", "dartls", "astro", "eslint", "bashls", "somesass_ls", "sqlls", "lua_ls" }
 
 local htmlSettings = {
   cmd = { "vscode-html-language-server", "--stdio" },
@@ -280,10 +280,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
     if not client then
       return
     end
-    if client:supports_method("textDocument/completion") then
-      vim.lsp.completion.enable(true, client.id, args.buf, { autotrigger = false })
-      vim.cmd("highlight @comment gui=italic cterm=italic")
-    end
+    vim.cmd("highlight @comment gui=italic cterm=italic")
   end,
 })
 

@@ -40,4 +40,3 @@ opt.path:append({ "**" })
 opt.wildignore:append({ "*/node_modules/*" })
 opt.formatoptions:append({ "r" })
 
-opt.autochdir = true

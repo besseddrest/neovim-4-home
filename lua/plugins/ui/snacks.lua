@@ -71,7 +71,7 @@ return {
         dim = {
             ---@type snacks.animate.Config|{enabled?: boolean}
             animate = {
-                enabled = vim.fn.has("nvim.0.10") == 1,
+                enabled = vim.fn.has("nvim-0.10") == 1,
                 easing = "outQuad",
                 duration = {
                     step = 20,

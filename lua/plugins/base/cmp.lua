@@ -5,6 +5,7 @@
 ---@type NvPluginSpec
 return {
 	"hrsh7th/nvim-cmp",
+	enabled = false, -- blink.cmp is the active completion engine
 	event = { "InsertEnter", "CmdlineEnter" },
 	dependencies = {
 		{ "hrsh7th/cmp-cmdline" },
