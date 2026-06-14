@@ -1,6 +1,6 @@
 return {
 	"stevearc/conform.nvim",
-	event = "BufWritePre", -- uncomment for format on save
+	event = "BufWritePre",
 	config = function()
 		require("conform").setup({
 			formatters_by_ft = {
@@ -11,6 +11,7 @@ return {
 				json = { "jsonlint" },
 				lua = { "stylua" },
 				mysql = { "sqlfluff" },
+				qml = { "qmlformat" },
 				scss = { "prettier" },
 				typescript = { "prettier" },
 				typescriptreact = { "prettier" },
@@ -23,7 +24,10 @@ return {
 			end,
 			formatters = {
 				prettier = {
-					prepend_args = { "--tab-width", "2", "--use-tabs", "false" },
+					prepend_args = { "--tab-width", "4", "--use-tabs", "false" },
+				},
+				qmlformat = {
+					command = "qmlformat",
 				},
 			},
 		})

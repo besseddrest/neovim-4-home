@@ -9,7 +9,7 @@ M.nvdash = {
 }
 
 M.base46 = {
-  theme = "cyberpunk2077",
+  theme = "rosepine",
   transparency = true,
   telescope = { style = "bordered" },
 }

@@ -3,42 +3,32 @@ return {
   event = "UIEnter",
   opts = {
     presets = { inc_rename = true },
-  },
-  config = function()
-    require("noice").setup {
-      -- add any options here
-      lsp = {
-        hover = {
-          enabled = true,
-        },
-        signature = {
-          enabled = true,
-        },
-      },
-      routes = {
-        {
-          filter = {
-            event = "msg_show",
-            any = {
-              { find = "%d+L, %d+B" },
-              { find = "; after #%d+" },
-              { find = "; before #%d+" },
-              { find = "%d fewer lines" },
-              { find = "%d more lines" },
-            },
+    notify = { enabled = false },
+    lsp = {
+      hover = { enabled = true },
+      signature = { enabled = true },
+    },
+    routes = {
+      {
+        filter = {
+          event = "msg_show",
+          any = {
+            { find = "%d+L, %d+B" },
+            { find = "; after #%d+" },
+            { find = "; before #%d+" },
+            { find = "%d fewer lines" },
+            { find = "%d more lines" },
           },
-          opts = { skip = true },
         },
-        {
-          view = "notify",
-          filter = { event = "msg_showmode" },
-        },
+        opts = { skip = true },
       },
-    }
-  end,
+      {
+        view = "notify",
+        filter = { event = "msg_showmode" },
+      },
+    },
+  },
   dependencies = {
-    -- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
     "MunifTanjim/nui.nvim",
-    -- "folke/snacks.nvim",
   },
 }
