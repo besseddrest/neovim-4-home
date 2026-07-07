@@ -2,7 +2,7 @@ return {
   "folke/noice.nvim",
   event = "UIEnter",
   opts = {
-    presets = { inc_rename = true },
+    presets = { inc_rename = true, lsp_doc_border = true },
     notify = { enabled = false },
     lsp = {
       hover = { enabled = true },

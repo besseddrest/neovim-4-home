@@ -24,7 +24,8 @@ map("n", "<leader>nh", "<CMD>noh<CR>", { desc = "Hide Search Matches" })
 
 -- (i)nlay hints
 map("n", "<leader>i", function()
-	vim.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled)
+	local enabled = vim.lsp.inlay_hint.is_enabled({ bufnr = 0 })
+	vim.lsp.inlay_hint.enable(not enabled, { bufnr = 0 })
 end, { desc = "Inlay Hint Toggle" })
 
 -- (f)ind and (r)eplace in current file
@@ -36,14 +37,20 @@ map("n", "<leader>od", function()
 end, { desc = "Opens Diagostic messages in a floated tooltip" })
 
 map("n", "gd", "<cmd>lua vim.lsp.buf.definition()<CR>", { noremap = true, silent = true, desc = "Go to Definition" })
-map("n", "K", vim.lsp.buf.hover, { desc = "LSP Hover" })
+map("n", "K", function()
+	vim.lsp.buf.hover({ max_width = math.floor(vim.o.columns * 0.5), border = "rounded" })
+end, { desc = "LSP Hover" })
 map("n", "gr", vim.lsp.buf.references, { desc = "LSP References" })
 map("n", "gi", vim.lsp.buf.implementation, { desc = "LSP Implementation" })
 map("n", "gy", vim.lsp.buf.type_definition, { desc = "LSP Type Definition" })
 map({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, { desc = "LSP Code Action" })
 map("n", "<leader>rn", vim.lsp.buf.rename, { desc = "LSP Rename" })
-map("n", "]d", function() vim.diagnostic.jump({ count = vim.v.count1, float = true }) end, { desc = "Next Diagnostic" })
-map("n", "[d", function() vim.diagnostic.jump({ count = -vim.v.count1, float = true }) end, { desc = "Prev Diagnostic" })
+map("n", "]d", function()
+	vim.diagnostic.jump({ count = vim.v.count1, float = true })
+end, { desc = "Next Diagnostic" })
+map("n", "[d", function()
+	vim.diagnostic.jump({ count = -vim.v.count1, float = true })
+end, { desc = "Prev Diagnostic" })
 
 -- greatest remap ever (ThePrimeagen)
 map("x", "<leader>p", "_dP")
@@ -106,6 +113,8 @@ map(
 	"<cmd>lua MiniFiles.close()<cr><bar><cmd>lua Snacks.picker.files({cwd = vim.fn.stdpath('config')})<cr>",
 	{ desc = "Nvim Config" }
 )
+map("n", "<leader>h", "<cmd>Huefy<cr>", { desc = "Huefy" })
+map("n", "<leader>S", "<cmd>Shades<cr>", { desc = "Shades" })
 map("n", "<leader>T", function()
 	local wins_before = {}
 	for _, w in ipairs(vim.api.nvim_list_wins()) do

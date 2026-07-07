@@ -6,7 +6,7 @@ local servers = {
 	"ts_ls",
 	"jsonls",
 	"markdown_oxide",
-	"qmlls",
+	"qml-language-server",
 	"dartls",
 	"astro",
 	"eslint",
@@ -137,9 +137,23 @@ local markdownSettings = {
 }
 
 local qmlSettings = {
-	cmd = { "qmlls6" },
-	filetypes = { "qml" },
-	root_markers = { "CMakeLists.txt", ".qmlproject", ".qmlls.ini", ".git" },
+	cmd = { "qml-language-server" },
+	filetypes = { "qml", "qmljs" },
+	root_markers = { { "qmldir", "shell.qml" }, ".git" },
+	single_file_support = true,
+	settings = {
+		qml = {
+			format = {
+				tabSize = vim.o.shiftwidth,
+				insertSpaces = vim.o.expandtab,
+			},
+		},
+	},
+	on_attach = function(client, bufnr)
+		if client:supports_method("textDocument/inlayHint") then
+			vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
+		end
+	end,
 }
 
 local dartSettings = {
@@ -265,7 +279,7 @@ vim.lsp.config("cssls", cssSettings)
 vim.lsp.config("ts_ls", tsSettings)
 vim.lsp.config("jsonls", jsonSettings)
 vim.lsp.config("markdown_oxide", markdownSettings)
-vim.lsp.config("qmlls", qmlSettings)
+vim.lsp.config("qml-language-server", qmlSettings)
 vim.lsp.config("dartls", dartSettings)
 vim.lsp.config("astro", astroSettings)
 vim.lsp.config("eslint", eslintSettings)
@@ -286,3 +300,4 @@ vim.api.nvim_create_autocmd("LspAttach", {
 })
 
 vim.diagnostic.config({})
+

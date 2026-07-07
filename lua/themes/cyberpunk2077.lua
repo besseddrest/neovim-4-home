@@ -78,7 +78,17 @@ M.polish_hl = {
 	defaults = {
 		Visual = { bg = "#FEE801", fg = "#0B080F" },
 		SnacksDashboardHeader = { fg = "#FEE801" },
-		LineNr = { fg = "#5D5560" },
+    LineNr = { fg = "#5D5560" },
+    NormalFloat = { bg = "#1D1520" },
+    FloatBorder = { fg = "#77FDF7" },
+    SnacksIndent1 = { bg = "#25166D" },
+    SnacksIndent2 = { bg = "#301368" },
+    SnacksIndent3 = { bg = "#3D1061" },
+    SnacksIndent4 = { bg = "#4C0D5A" },
+    SnacksIndent5 = { bg = "#5C0952" },
+    SnacksIndent6 = { bg = "#6D0549" },
+    SnacksIndent7 = { bg = "#800040" },
+    SnacksIndent8 = { bg = "#961F43" },
 	},
 }
 

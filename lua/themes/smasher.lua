@@ -67,6 +67,16 @@ M.polish_hl = {
     IncSearch = { bg = "#581008", fg = "#B8C8C0" },
     Search = { bg = "#402838" },
     Subtle = { bg = "#0A1820" },
+    NormalFloat = { bg = "#102028" },
+    FloatBorder = { fg = "#88A8C0" },
+    SnacksIndent1 = { bg = "#25166D" },
+    SnacksIndent2 = { bg = "#301368" },
+    SnacksIndent3 = { bg = "#3D1061" },
+    SnacksIndent4 = { bg = "#4C0D5A" },
+    SnacksIndent5 = { bg = "#5C0952" },
+    SnacksIndent6 = { bg = "#6D0549" },
+    SnacksIndent7 = { bg = "#800040" },
+    SnacksIndent8 = { bg = "#961F43" },
   },
 }
 

@@ -16,6 +16,7 @@ return {
 			"java",
 			"bash",
 			"regex",
+			"qmljs",
 		},
 		highlights = {
 			enable = true,

@@ -15,7 +15,6 @@ return {
             "sqlls",
             "ts_ls",
             "bashls",
-            "qmlls",
             "dartls",
         },
     },
