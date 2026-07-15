@@ -82,27 +82,47 @@ return {
 		bigfile = { enabled = true },
 		dashboard = {
 			enabled = true,
-			preset = {
-				header = bloody,
-			},
+			-- preset = {
+			-- 	header = bloody,
+			-- },
 			sections = {
-				function()
-					local img = vim.fn.stdpath("config") .. "/lua/images/layer1.png"
-					local f = io.open(img, "r")
-					local has_img = f and (f:close() or true)
-					if vim.fn.executable("chafa") == 1 and has_img then
+				--
+				-- function()
+				-- 	local img = vim.fn.stdpath("config") .. "/lua/images/sandy-3up.png"
+				-- 	local f = io.open(img, "r")
+				-- 	local has_img = f and (f:close() or true)
+				-- 	if vim.fn.executable("chafa") == 1 and has_img then
+				-- 		return {
+				-- 		}
+				-- 	end
+				-- 	return { section = "header", padding = 2 }
+				-- end,
+				{
+					function()
+						local img = vim.fn.stdpath("config") .. "/lua/images/sandy-3up.png"
+						local placement = nil
 						return {
-							section = "terminal",
-							cmd = "chafa " .. img .. " --symbols vhalf; tail -f /dev/null",
-							padding = 1,
+							indent = 4,
+							render = function(self, pos)
+								if placement then
+									pcall(placement.close, placement)
+								end
+								if Snacks.image and Snacks.image.supports(img) then
+									placement = Snacks.image.placement.new(self.buf, img, {
+										pos = { pos[1], pos[2] + 4 },
+										width = self.opts.width - 4,
+									})
+								end
+							end,
+							text = ("\n"):rep(3),
 						}
-					end
-					return { section = "header", padding = 2 }
-				end,
+					end,
+				},
 				{ section = "keys", gap = 1, padding = 1 },
 				{ section = "startup" },
 			},
 		},
+		image = { enabled = true },
 		indent = {
 			priority = 1,
 			enabled = true,
@@ -236,13 +256,6 @@ return {
 			desc = "Toggle Scratch Buffer",
 		},
 		{
-			"<leader>S",
-			function()
-				Snacks.scratch.select()
-			end,
-			desc = "Select Scratch Buffer",
-		},
-		{
 			"<leader>n",
 			function()
 				Snacks.notifier.show_history()
@@ -257,14 +270,14 @@ return {
 			desc = "Delete Buffer",
 		},
 		{
-			"<leader>cR",
+			"<leader>br",
 			function()
 				Snacks.rename.rename_file()
 			end,
 			desc = "Rename File",
 		},
 		{
-			"<leader>gB",
+			"<leader>go",
 			function()
 				Snacks.gitbrowse()
 			end,
@@ -272,21 +285,21 @@ return {
 			mode = { "n", "v" },
 		},
 		{
-			"<leader>gb",
+			"<leader>bl",
 			function()
 				Snacks.git.blame_line()
 			end,
 			desc = "Git Blame Line",
 		},
 		{
-			"<leader>gf",
+			"<leader>fh",
 			function()
 				Snacks.lazygit.log_file()
 			end,
 			desc = "Lazygit Current File History",
 		},
 		{
-			"<leader>gg",
+			"<leader>lg",
 			function()
 				Snacks.lazygit()
 			end,
@@ -307,53 +320,53 @@ return {
 			desc = "Dismiss All Notifications",
 		},
 		{
-			"<c-/>",
+			"<leader>tt",
 			function()
 				Snacks.terminal()
 			end,
 			desc = "Toggle Terminal",
 		},
-		{
-			"<c-_>",
-			function()
-				Snacks.terminal()
-			end,
-			desc = "which_key_ignore",
-		},
-		{
-			"]]",
-			function()
-				Snacks.words.jump(vim.v.count1)
-			end,
-			desc = "Next Reference",
-			mode = { "n", "t" },
-		},
-		{
-			"[[",
-			function()
-				Snacks.words.jump(-vim.v.count1)
-			end,
-			desc = "Prev Reference",
-			mode = { "n", "t" },
-		},
-		{
-			"<leader>N",
-			desc = "Neovim News",
-			function()
-				Snacks.win({
-					file = vim.api.nvim_get_runtime_file("doc/news.txt", false)[1],
-					width = 0.6,
-					height = 0.6,
-					wo = {
-						spell = false,
-						wrap = false,
-						signcolumn = "yes",
-						statuscolumn = " ",
-						conceallevel = 3,
-					},
-				})
-			end,
-		},
+		-- {
+		-- 	"<c-_>",
+		-- 	function()
+		-- 		Snacks.terminal()
+		-- 	end,
+		-- 	desc = "which_key_ignore",
+		-- },
+		-- {
+		-- 	"]]",
+		-- 	function()
+		-- 		Snacks.words.jump(vim.v.count1)
+		-- 	end,
+		-- 	desc = "Next Reference",
+		-- 	mode = { "n", "t" },
+		-- },
+		-- {
+		-- 	"[[",
+		-- 	function()
+		-- 		Snacks.words.jump(-vim.v.count1)
+		-- 	end,
+		-- 	desc = "Prev Reference",
+		-- 	mode = { "n", "t" },
+		-- },
+		-- {
+		-- 	"<leader>N",
+		-- 	desc = "Neovim News",
+		-- 	function()
+		-- 		Snacks.win({
+		-- 			file = vim.api.nvim_get_runtime_file("doc/news.txt", false)[1],
+		-- 			width = 0.6,
+		-- 			height = 0.6,
+		-- 			wo = {
+		-- 				spell = false,
+		-- 				wrap = false,
+		-- 				signcolumn = "yes",
+		-- 				statuscolumn = " ",
+		-- 				conceallevel = 3,
+		-- 			},
+		-- 		})
+		-- 	end,
+		-- },
 	},
 	init = function()
 		vim.api.nvim_create_autocmd("User", {

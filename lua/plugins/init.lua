@@ -12,7 +12,7 @@ return {
 	{ import = "plugins.ui.incline" },
 	{ import = "plugins.ui.tiny-inline-diagnostic" },
 	{ import = "plugins.ui.render-markdown" },
-	-- { import = "plugins.ui.smear-cursor" },
+	-- { import = "plugins.ui.indent-blankline" },
 
 	-- util
 	{ import = "plugins.util.mini-files" },

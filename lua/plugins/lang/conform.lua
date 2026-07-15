@@ -28,6 +28,7 @@ return {
 				},
 				qmlformat = {
 					command = "qmlformat",
+					args = { "--no-sort" },
 				},
 			},
 		})

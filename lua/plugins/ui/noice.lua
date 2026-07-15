@@ -6,7 +6,7 @@ return {
     notify = { enabled = false },
     lsp = {
       hover = { enabled = true },
-      signature = { enabled = true },
+      signature = { enabled = false },
     },
     routes = {
       {
