@@ -38,5 +38,4 @@ opt.inccommand = "split"
 opt.backspace = { "start", "eol", "indent" }
 opt.path:append({ "**" })
 opt.wildignore:append({ "*/node_modules/*" })
-opt.formatoptions:append({ "r" })
 

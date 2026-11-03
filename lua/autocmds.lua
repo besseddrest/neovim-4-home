@@ -51,28 +51,28 @@ vim.api.nvim_create_autocmd("Filetype", {
 })
 
 vim.api.nvim_create_autocmd({ "BufEnter", "FileType" }, {
-    desc = "Prevent auto-comment on new line.",
-    pattern = "*",
-    group = augroup("NoNewLineComment", { clear = true }),
-    command = [[
+	desc = "Prevent auto-comment on new line.",
+	pattern = "*",
+	group = augroup("NoNewLineComment", { clear = true }),
+	command = [[
     setlocal formatoptions-=c formatoptions-=r formatoptions-=o
   ]],
 })
 
 vim.api.nvim_create_autocmd("TextYankPost", {
-    desc = "Highlight on yank.",
-    group = augroup("HighlightOnYank", { clear = true }),
-    callback = function()
-        vim.highlight.on_yank({ higroup = "YankVisual", timeout = 200, on_visual = true })
-    end,
+	desc = "Highlight on yank.",
+	group = augroup("HighlightOnYank", { clear = true }),
+	callback = function()
+		vim.hl.on_yank({ higroup = "YankVisual", timeout = 200, on_visual = true })
+	end,
 })
 
 vim.api.nvim_create_autocmd("BufWritePre", {
-    desc = "Remove trailing whitespaces on save.",
-    group = augroup("TrimWhitespaceOnSave", { clear = true }),
-    command = [[ %s/\s\+$//e ]],
+	desc = "Remove trailing whitespaces on save.",
+	group = augroup("TrimWhitespaceOnSave", { clear = true }),
+	command = [[ %s/\s\+$//e ]],
 })
--- end from gale
+
 
 -- NvimTree
 -- vim.api.nvim_create_autocmd("BufWinEnter", {

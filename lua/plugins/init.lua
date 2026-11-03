@@ -1,8 +1,12 @@
 return {
-	-- language related
+	-- language / LSP
 	{ import = "plugins.lang.ts-autotag" },
 	{ import = "plugins.lang.ts-comments" },
 	{ import = "plugins.lang.flutter-tools" },
+	{ import = "plugins.lang.conform" },
+	{ import = "plugins.base.mason" },
+	{ import = "plugins.base.lspconfig" },
+	{ import = "nvchad.blink.lazyspec" },
 
 	-- ui
 	{ import = "plugins.ui.snacks" },
@@ -12,7 +16,8 @@ return {
 	{ import = "plugins.ui.incline" },
 	{ import = "plugins.ui.tiny-inline-diagnostic" },
 	{ import = "plugins.ui.render-markdown" },
-	-- { import = "plugins.ui.indent-blankline" },
+	{ import = "plugins.ui.gitsigns" },
+	{ import = "plugins.ui.colorizer" },
 
 	-- util
 	{ import = "plugins.util.mini-files" },

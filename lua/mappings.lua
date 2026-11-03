@@ -72,49 +72,50 @@ end, { desc = "terminal toggle floating term" })
 
 -- NOTE: PLUGIN SPECIFIC
 
-map("n", "<leader><BS>", "<cmd>bd<CR>", { desc = "Buffer close" })
+map("n", "<leader><BS>", function()
+	Snacks.bufdelete()
+end, { desc = "Buffer close" })
 map("n", "<leader>bn", "<cmd>enew<CR>", { desc = "Buffer new" })
 map("n", "<leader>bh", "<cmd>split | enew<CR>", { desc = "Buffer new horizontal split" })
 map("n", "<leader>bv", "<cmd>vsplit | enew<CR>", { desc = "Buffer new vertical split" })
 
--- MiniFiles (open file tree)
-map("n", "<C-n>", "<cmd>lua MiniFiles.open()<cr>", { desc = "MiniFiles Toggle" })
+-- Close mini.files if open (no-op when plugin not loaded yet)
+local function close_mini_files()
+	local ok, mf = pcall(require, "mini.files")
+	if ok then
+		pcall(mf.close)
+	end
+end
 
--- Pickers
-map("n", "<leader>G", "<cmd>lua MiniFiles.close()<cr><bar><cmd>lua Snacks.picker.grep()<cr>", { desc = "Live Grep" })
-map(
-	"n",
-	"<leader>R",
-	"<cmd>lua MiniFiles.close()<cr><bar><cmd>lua Snacks.picker.recent()<cr>",
-	{ desc = "Recent Picker" }
-)
-map("n", "<leader>F", "<cmd>lua MiniFiles.close()<cr><bar><cmd>lua Snacks.picker.files()<cr>", { desc = "Find Files" })
-map(
-	"n",
-	"<leader>B",
-	"<cmd>lua MiniFiles.close()<cr><bar><cmd>lua Snacks.picker.buffers()<cr>",
-	{ desc = "Buffers List" }
-)
-map(
-	"n",
-	"<leader>L",
-	"<cmd>lua MiniFiles.close()<cr><bar><cmd>lua Snacks.picker.highlights()<cr>",
-	{ desc = "Highlights" }
-)
-map(
-	"n",
-	"<leader>N",
-	"<cmd>lua MiniFiles.close()<cr><bar><cmd>lua Snacks.picker.notifications()<cr>",
-	{ desc = "Notifications" }
-)
-map(
-	"n",
-	"<leader>C",
-	"<cmd>lua MiniFiles.close()<cr><bar><cmd>lua Snacks.picker.files({cwd = vim.fn.stdpath('config')})<cr>",
-	{ desc = "Nvim Config" }
-)
-map("n", "<leader>h", "<cmd>Huefy<cr>", { desc = "Huefy" })
-map("n", "<leader>S", "<cmd>Shades<cr>", { desc = "Shades" })
+-- Pickers (<C-n> MiniFiles lives on the plugin keys spec)
+map("n", "<leader>G", function()
+	close_mini_files()
+	Snacks.picker.grep()
+end, { desc = "Live Grep" })
+map("n", "<leader>R", function()
+	close_mini_files()
+	Snacks.picker.recent()
+end, { desc = "Recent Picker" })
+map("n", "<leader>F", function()
+	close_mini_files()
+	Snacks.picker.files()
+end, { desc = "Find Files" })
+map("n", "<leader>B", function()
+	close_mini_files()
+	Snacks.picker.buffers()
+end, { desc = "Buffers List" })
+map("n", "<leader>L", function()
+	close_mini_files()
+	Snacks.picker.highlights()
+end, { desc = "Highlights" })
+map("n", "<leader>N", function()
+	close_mini_files()
+	Snacks.picker.notifications()
+end, { desc = "Notifications" })
+map("n", "<leader>C", function()
+	close_mini_files()
+	Snacks.picker.files({ cwd = vim.fn.stdpath("config") })
+end, { desc = "Nvim Config" })
 map("n", "<leader>T", function()
 	local wins_before = {}
 	for _, w in ipairs(vim.api.nvim_list_wins()) do

@@ -7,6 +7,7 @@ local servers = {
 	"jsonls",
 	"markdown_oxide",
 	"qml-language-server",
+	"qmlls",
 	"dartls",
 	"astro",
 	"eslint",
@@ -136,11 +137,52 @@ local markdownSettings = {
 	root_markers = { ".git", ".obsidian", ".moxide.toml" },
 }
 
+-- A Quickshell config is self contained: the directory that holds shell.qml is
+-- the project root and everything under it (components/, utils/, ...) belongs to
+-- that config alone. Rooting at the shared git repo instead would index every
+-- shell config in one workspace.
+local function qml_root(bufnr, on_dir)
+	local fname = vim.api.nvim_buf_get_name(bufnr)
+	local dir = vim.fs.dirname(vim.fs.normalize(fname))
+	on_dir(vim.fs.root(dir, { "shell.qml" }) or vim.fs.root(dir, { ".git" }) or dir)
+end
+
+-- Quickshell's QML plugins are statically linked into the quickshell binary, so
+-- qmlls cannot load them to check that the types are creatable. Upstream
+-- documents this ("PanelWindow in particular cannot be resolved").
+local function drop_uncreatable(diagnostics)
+	return vim.tbl_filter(function(d)
+		return not (d.message or ""):find("[uncreatable-type]", 1, true)
+	end, diagnostics)
+end
+
+-- Qt's official QML language server. Type aware, so it reports unknown
+-- properties, wrong types and unresolved imports. This is the ts_ls of QML.
+local qmllsSettings = {
+	cmd = { "/usr/bin/qmlls6" },
+	filetypes = { "qml" },
+	root_dir = qml_root,
+	on_attach = function(client)
+		client.handlers["textDocument/publishDiagnostics"] = function(err, params, ctx)
+			params.diagnostics = drop_uncreatable(params.diagnostics)
+			vim.lsp.diagnostic.on_publish_diagnostics(err, params, ctx)
+		end
+		client.handlers["textDocument/diagnostic"] = function(err, result, ctx)
+			if result and result.kind == "full" then
+				result.items = drop_uncreatable(result.items)
+			end
+			vim.lsp.diagnostic.on_diagnostic(err, result, ctx)
+		end
+	end,
+}
+
+-- Third party Go QML server. Knows Quickshell types, imports and snippets and
+-- indexes workspace components across files. Its diagnostics are parse errors
+-- only, so they are muted to avoid doubling up with qmlls.
 local qmlSettings = {
 	cmd = { "qml-language-server" },
-	filetypes = { "qml", "qmljs" },
-	root_markers = { { "qmldir", "shell.qml" }, ".git" },
-	single_file_support = true,
+	filetypes = { "qml" },
+	root_dir = qml_root,
 	settings = {
 		qml = {
 			format = {
@@ -150,6 +192,8 @@ local qmlSettings = {
 		},
 	},
 	on_attach = function(client, bufnr)
+		client.handlers["textDocument/publishDiagnostics"] = function() end
+		client.handlers["textDocument/diagnostic"] = function() end
 		if client:supports_method("textDocument/inlayHint") then
 			vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
 		end
@@ -280,6 +324,7 @@ vim.lsp.config("ts_ls", tsSettings)
 vim.lsp.config("jsonls", jsonSettings)
 vim.lsp.config("markdown_oxide", markdownSettings)
 vim.lsp.config("qml-language-server", qmlSettings)
+vim.lsp.config("qmlls", qmllsSettings)
 vim.lsp.config("dartls", dartSettings)
 vim.lsp.config("astro", astroSettings)
 vim.lsp.config("eslint", eslintSettings)
