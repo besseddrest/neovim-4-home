@@ -191,12 +191,11 @@ local qmlSettings = {
 			},
 		},
 	},
-	on_attach = function(client, bufnr)
+	on_attach = function(client, _)
 		client.handlers["textDocument/publishDiagnostics"] = function() end
 		client.handlers["textDocument/diagnostic"] = function() end
-		if client:supports_method("textDocument/inlayHint") then
-			vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
-		end
+		-- upstream Go race in handler/inlayhints.go: concurrent map read/write
+		client.server_capabilities.inlayHintProvider = false
 	end,
 }
 

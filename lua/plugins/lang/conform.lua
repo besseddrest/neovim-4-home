@@ -27,8 +27,9 @@ return {
 			prettier = {
 				prepend_args = { "--tab-width", "4", "--use-tabs", "false" },
 			},
+			-- PATH's qmlformat is Qt5 (shadowed by qt5-declarative); need Qt6
 			qmlformat = {
-				command = "qmlformat",
+				command = "/usr/lib/qt6/bin/qmlformat",
 			},
 		},
 	},
