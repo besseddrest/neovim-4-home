@@ -5,7 +5,8 @@ return {
     presets = { inc_rename = true, lsp_doc_border = true },
     notify = { enabled = false },
     lsp = {
-      hover = { enabled = true },
+      -- Native hover merges multi-client replies and drops empty ones (qmlls).
+      hover = { enabled = false },
       signature = { enabled = false },
     },
     routes = {

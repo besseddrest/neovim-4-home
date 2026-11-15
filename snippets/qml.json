@@ -1,0 +1,478 @@
+{
+  "pragma bound": {
+    "prefix": "prag",
+    "body": ["pragma ComponentBehavior: Bound", "", "$0"],
+    "description": "ComponentBehavior: Bound (required for most Quickshell)"
+  },
+  "pragma singleton": {
+    "prefix": "singleton",
+    "body": ["pragma Singleton", "", "$0"],
+    "description": "Singleton component"
+  },
+  "shell root": {
+    "prefix": "shell",
+    "body": [
+      "pragma ComponentBehavior: Bound",
+      "",
+      "import Quickshell",
+      "import QtQuick",
+      "import \"components\"",
+      "",
+      "ShellRoot {",
+      "    id: root",
+      "",
+      "    $0",
+      "}"
+    ],
+    "description": "shell.qml boilerplate"
+  },
+  "component file": {
+    "prefix": "comp",
+    "body": [
+      "pragma ComponentBehavior: Bound",
+      "",
+      "import QtQuick",
+      "import Quickshell",
+      "",
+      "${1:Item} {",
+      "    id: root",
+      "",
+      "    $0",
+      "}"
+    ],
+    "description": "New component file"
+  },
+  "imports quickshell": {
+    "prefix": "impqs",
+    "body": [
+      "import Quickshell",
+      "import QtQuick",
+      "import \"components\"",
+      "$0"
+    ],
+    "description": "Common Quickshell imports"
+  },
+  "import wayland": {
+    "prefix": "impwl",
+    "body": ["import Quickshell.Wayland", "$0"],
+    "description": "Quickshell.Wayland"
+  },
+  "import io": {
+    "prefix": "impio",
+    "body": ["import Quickshell.Io", "$0"],
+    "description": "Quickshell.Io (Process, FileView, …)"
+  },
+  "import services": {
+    "prefix": "impsvc",
+    "body": ["import Quickshell.Services.${1:Mpris}", "$0"],
+    "description": "Quickshell.Services.*"
+  },
+  "PanelWindow": {
+    "prefix": "pw",
+    "body": [
+      "PanelWindow {",
+      "    id: ${1:panel}",
+      "",
+      "    anchors {",
+      "        ${2|top,bottom,left,right|}: true",
+      "    }",
+      "",
+      "    implicit${3|Width,Height|}: ${4:30}",
+      "    color: \"${5:transparent}\"",
+      "",
+      "    $0",
+      "}"
+    ],
+    "description": "PanelWindow bar/dock"
+  },
+  "PanelWindow overlay": {
+    "prefix": "pwo",
+    "body": [
+      "PanelWindow {",
+      "    id: ${1:overlay}",
+      "",
+      "    WlrLayershell.layer: WlrLayer.Overlay",
+      "    exclusionMode: ExclusionMode.Ignore",
+      "    color: \"transparent\"",
+      "",
+      "    anchors {",
+      "        left: true",
+      "        right: true",
+      "        top: true",
+      "        bottom: true",
+      "    }",
+      "",
+      "    $0",
+      "}"
+    ],
+    "description": "Fullscreen overlay PanelWindow"
+  },
+  "Scope": {
+    "prefix": "scope",
+    "body": [
+      "Scope {",
+      "    id: ${1:root}",
+      "",
+      "    $0",
+      "}"
+    ],
+    "description": "Non-visual Scope root"
+  },
+  "FloatingWindow": {
+    "prefix": "fw",
+    "body": [
+      "FloatingWindow {",
+      "    id: ${1:root}",
+      "",
+      "    title: \"${2:Window}\"",
+      "    implicitWidth: ${3:400}",
+      "    implicitHeight: ${4:300}",
+      "    color: \"${5:transparent}\"",
+      "    visible: true",
+      "",
+      "    $0",
+      "}"
+    ],
+    "description": "FloatingWindow"
+  },
+  "property": {
+    "prefix": "prop",
+    "body": ["property ${1:real} ${2:name}: ${3:0}", "$0"],
+    "description": "property type name: value"
+  },
+  "readonly property": {
+    "prefix": "roprop",
+    "body": ["readonly property ${1:real} ${2:name}: ${3:0}", "$0"],
+    "description": "readonly property"
+  },
+  "alias property": {
+    "prefix": "alias",
+    "body": ["property alias ${1:name}: ${2:target}.${3:prop}", "$0"],
+    "description": "property alias"
+  },
+  "signal": {
+    "prefix": "sig",
+    "body": ["signal ${1:name}(${2})", "$0"],
+    "description": "signal declaration"
+  },
+  "function": {
+    "prefix": "func",
+    "body": [
+      "function ${1:name}(${2}) {",
+      "    $0",
+      "}"
+    ],
+    "description": "JS function"
+  },
+  "anchors block": {
+    "prefix": "anc",
+    "body": [
+      "anchors {",
+      "    ${1|left,right,top,bottom|}: true",
+      "    $0",
+      "}"
+    ],
+    "description": "anchors { edge: true }"
+  },
+  "anchors.fill": {
+    "prefix": "afill",
+    "body": ["anchors.fill: ${1:parent}", "$0"],
+    "description": "anchors.fill"
+  },
+  "anchors.centerIn": {
+    "prefix": "acen",
+    "body": ["anchors.centerIn: ${1:parent}", "$0"],
+    "description": "anchors.centerIn"
+  },
+  "Rectangle": {
+    "prefix": "rect",
+    "body": [
+      "Rectangle {",
+      "    id: ${1:rect}",
+      "    width: ${2:100}",
+      "    height: ${3:100}",
+      "    color: \"${4:#1a1a1a}\"",
+      "    radius: ${5:0}",
+      "    $0",
+      "}"
+    ],
+    "description": "Rectangle"
+  },
+  "Rectangle filled": {
+    "prefix": "rectf",
+    "body": [
+      "Rectangle {",
+      "    anchors.fill: ${1:parent}",
+      "    color: \"${2:transparent}\"",
+      "    $0",
+      "}"
+    ],
+    "description": "Rectangle filling parent"
+  },
+  "Text": {
+    "prefix": "txt",
+    "body": [
+      "Text {",
+      "    text: ${1:\"\"}",
+      "    color: \"${2:#ffffff}\"",
+      "    font.pixelSize: ${3:14}",
+      "    $0",
+      "}"
+    ],
+    "description": "Text"
+  },
+  "MouseArea": {
+    "prefix": "ma",
+    "body": [
+      "MouseArea {",
+      "    anchors.fill: ${1:parent}",
+      "    hoverEnabled: ${2:true}",
+      "    onClicked: ${3}",
+      "    $0",
+      "}"
+    ],
+    "description": "MouseArea"
+  },
+  "Timer": {
+    "prefix": "timer",
+    "body": [
+      "Timer {",
+      "    id: ${1:timer}",
+      "    interval: ${2:1000}",
+      "    running: ${3:true}",
+      "    repeat: ${4:true}",
+      "    triggeredOnStart: ${5:false}",
+      "    onTriggered: ${6}",
+      "}"
+    ],
+    "description": "Timer"
+  },
+  "Connections": {
+    "prefix": "conn",
+    "body": [
+      "Connections {",
+      "    target: ${1:root}",
+      "",
+      "    function on${2:Signal}() {",
+      "        $0",
+      "    }",
+      "}"
+    ],
+    "description": "Connections"
+  },
+  "Repeater": {
+    "prefix": "rep",
+    "body": [
+      "Repeater {",
+      "    model: ${1:4}",
+      "",
+      "    delegate: ${2:Item} {",
+      "        required property int index",
+      "        $0",
+      "    }",
+      "}"
+    ],
+    "description": "Repeater with Bound-safe index"
+  },
+  "Column": {
+    "prefix": "col",
+    "body": [
+      "Column {",
+      "    id: ${1:col}",
+      "    spacing: ${2:8}",
+      "    $0",
+      "}"
+    ],
+    "description": "Column"
+  },
+  "Row": {
+    "prefix": "row",
+    "body": [
+      "Row {",
+      "    id: ${1:row}",
+      "    spacing: ${2:8}",
+      "    $0",
+      "}"
+    ],
+    "description": "Row"
+  },
+  "ColumnLayout": {
+    "prefix": "coll",
+    "body": [
+      "ColumnLayout {",
+      "    id: ${1:layout}",
+      "    anchors.fill: ${2:parent}",
+      "    spacing: ${3:8}",
+      "    $0",
+      "}"
+    ],
+    "description": "ColumnLayout (needs QtQuick.Layouts)"
+  },
+  "RowLayout": {
+    "prefix": "rowl",
+    "body": [
+      "RowLayout {",
+      "    id: ${1:layout}",
+      "    anchors.fill: ${2:parent}",
+      "    spacing: ${3:8}",
+      "    $0",
+      "}"
+    ],
+    "description": "RowLayout (needs QtQuick.Layouts)"
+  },
+  "Item": {
+    "prefix": "item",
+    "body": [
+      "Item {",
+      "    id: ${1:item}",
+      "    width: ${2:100}",
+      "    height: ${3:100}",
+      "    $0",
+      "}"
+    ],
+    "description": "Item"
+  },
+  "Loader": {
+    "prefix": "loader",
+    "body": [
+      "Loader {",
+      "    id: ${1:loader}",
+      "    active: ${2:true}",
+      "    sourceComponent: ${3:comp}",
+      "    $0",
+      "}"
+    ],
+    "description": "Loader"
+  },
+  "Component": {
+    "prefix": "cdef",
+    "body": [
+      "Component {",
+      "    id: ${1:comp}",
+      "",
+      "    ${2:Item} {",
+      "        $0",
+      "    }",
+      "}"
+    ],
+    "description": "inline Component"
+  },
+  "Behavior": {
+    "prefix": "beh",
+    "body": [
+      "Behavior on ${1:opacity} {",
+      "    NumberAnimation {",
+      "        duration: ${2:200}",
+      "        easing.type: Easing.${3:OutCubic}",
+      "    }",
+      "}"
+    ],
+    "description": "Behavior + NumberAnimation"
+  },
+  "NumberAnimation": {
+    "prefix": "anim",
+    "body": [
+      "NumberAnimation {",
+      "    id: ${1:anim}",
+      "    target: ${2:root}",
+      "    property: \"${3:opacity}\"",
+      "    duration: ${4:200}",
+      "    easing.type: Easing.${5:OutCubic}",
+      "}"
+    ],
+    "description": "NumberAnimation"
+  },
+  "states": {
+    "prefix": "states",
+    "body": [
+      "states: [",
+      "    State {",
+      "        name: \"${1:active}\"",
+      "        when: ${2:condition}",
+      "        PropertyChanges {",
+      "            target: ${3:root}",
+      "            ${4:opacity}: ${5:1}",
+      "        }",
+      "    }",
+      "]",
+      "$0"
+    ],
+    "description": "states: [ State { … } ]"
+  },
+  "Process": {
+    "prefix": "proc",
+    "body": [
+      "Process {",
+      "    id: ${1:proc}",
+      "    command: [\"${2:sh}\", \"-c\", \"${3}\"]",
+      "    running: ${4:false}",
+      "",
+      "    stdout: StdioCollector {",
+      "        onStreamFinished: ${5}",
+      "    }",
+      "}"
+    ],
+    "description": "Quickshell.Io Process"
+  },
+  "FileView": {
+    "prefix": "fileview",
+    "body": [
+      "FileView {",
+      "    id: ${1:file}",
+      "    path: \"${2}\"",
+      "    watchChanges: ${3:true}",
+      "    onFileChanged: ${1:file}.reload()",
+      "    onLoaded: ${4}",
+      "}"
+    ],
+    "description": "Quickshell.Io FileView"
+  },
+  "SystemClock": {
+    "prefix": "clock",
+    "body": [
+      "SystemClock {",
+      "    id: ${1:clock}",
+      "    precision: SystemClock.${2|Seconds,Minutes,Hours|}",
+      "}"
+    ],
+    "description": "SystemClock"
+  },
+  "border": {
+    "prefix": "border",
+    "body": [
+      "border {",
+      "    color: \"${1:#ffffff}\"",
+      "    width: ${2:1}",
+      "}"
+    ],
+    "description": "border { color, width }"
+  },
+  "opacity bind": {
+    "prefix": "opac",
+    "body": ["opacity: ${1:mouse.containsMouse ? 1 : 0.7}", "$0"],
+    "description": "opacity binding"
+  },
+  "visible bind": {
+    "prefix": "vis",
+    "body": ["visible: ${1:true}", "$0"],
+    "description": "visible"
+  },
+  "onCompleted": {
+    "prefix": "onc",
+    "body": [
+      "Component.onCompleted: {",
+      "    $0",
+      "}"
+    ],
+    "description": "Component.onCompleted"
+  },
+  "onDestruction": {
+    "prefix": "ond",
+    "body": [
+      "Component.onDestruction: {",
+      "    $0",
+      "}"
+    ],
+    "description": "Component.onDestruction"
+  }
+}

@@ -140,11 +140,15 @@ local markdownSettings = {
 -- A Quickshell config is self contained: the directory that holds shell.qml is
 -- the project root and everything under it (components/, utils/, ...) belongs to
 -- that config alone. Rooting at the shared git repo instead would index every
--- shell config in one workspace.
+-- shell config in one workspace. qmldir/CMakeLists.txt cover real Qt projects.
 local function qml_root(bufnr, on_dir)
 	local fname = vim.api.nvim_buf_get_name(bufnr)
 	local dir = vim.fs.dirname(vim.fs.normalize(fname))
-	on_dir(vim.fs.root(dir, { "shell.qml" }) or vim.fs.root(dir, { ".git" }) or dir)
+	on_dir(
+		vim.fs.root(dir, { "shell.qml", "qmldir", "CMakeLists.txt" })
+			or vim.fs.root(dir, { ".git" })
+			or dir
+	)
 end
 
 -- Quickshell's QML plugins are statically linked into the quickshell binary, so
@@ -156,29 +160,63 @@ local function drop_uncreatable(diagnostics)
 	end, diagnostics)
 end
 
+-- Config-level handlers so the first publish is filtered too (on_attach is too late).
+local qmlls_handlers = {
+	["textDocument/publishDiagnostics"] = function(err, params, ctx)
+		params.diagnostics = drop_uncreatable(params.diagnostics)
+		vim.lsp.diagnostic.on_publish_diagnostics(err, params, ctx)
+	end,
+	["textDocument/diagnostic"] = function(err, result, ctx)
+		if result and result.kind == "full" then
+			result.items = drop_uncreatable(result.items)
+		end
+		vim.lsp.diagnostic.on_diagnostic(err, result, ctx)
+	end,
+}
+
+-- qmlls semantic token types that aren't in the standard LSP legend.
+local qml_semantic_links = {
+	["@lsp.type.qmlLocalId.qml"] = "Identifier",
+	["@lsp.type.qmlExternalId.qml"] = "Identifier",
+	["@lsp.type.qmlRootObjectProperty.qml"] = "Property",
+	["@lsp.type.qmlScopeObjectProperty.qml"] = "Property",
+	["@lsp.type.qmlExternalObjectProperty.qml"] = "Property",
+	["@lsp.type.qmlStateName.qml"] = "Constant",
+	["@lsp.type.jsScopeVar.qml"] = "Variable",
+	["@lsp.type.jsImportVar.qml"] = "Include",
+	["@lsp.type.jsGlobalVar.qml"] = "Constant",
+}
+
+local function link_qml_semantic_tokens()
+	for group, link in pairs(qml_semantic_links) do
+		vim.api.nvim_set_hl(0, group, { link = link, default = true })
+	end
+end
+
 -- Qt's official QML language server. Type aware, so it reports unknown
 -- properties, wrong types and unresolved imports. This is the ts_ls of QML.
+-- Hover is documentation-lookup only and returns empty without qdoc; mute it
+-- so the Go server owns hover. Definition of local components works well.
 local qmllsSettings = {
-	cmd = { "/usr/bin/qmlls6" },
+	cmd = { "/usr/bin/qmlls6", "--no-cmake-calls" },
 	filetypes = { "qml" },
 	root_dir = qml_root,
+	handlers = qmlls_handlers,
+	-- Override NvChad's "*" on_init so semantic tokens stay enabled.
+	on_init = function() end,
 	on_attach = function(client)
-		client.handlers["textDocument/publishDiagnostics"] = function(err, params, ctx)
-			params.diagnostics = drop_uncreatable(params.diagnostics)
-			vim.lsp.diagnostic.on_publish_diagnostics(err, params, ctx)
-		end
-		client.handlers["textDocument/diagnostic"] = function(err, result, ctx)
-			if result and result.kind == "full" then
-				result.items = drop_uncreatable(result.items)
-			end
-			vim.lsp.diagnostic.on_diagnostic(err, result, ctx)
-		end
+		client.server_capabilities.hoverProvider = false
+		-- Go server owns completion (Class + module detail, property insertText).
+		client.server_capabilities.completionProvider = nil
+		link_qml_semantic_tokens()
 	end,
 }
 
 -- Third party Go QML server. Knows Quickshell types, imports and snippets and
--- indexes workspace components across files. Its diagnostics are parse errors
--- only, so they are muted to avoid doubling up with qmlls.
+-- indexes workspace components across files. Owns hover. Diagnostics are parse
+-- errors only, so they are muted to avoid doubling up with qmlls. Definition
+-- jumps to the import line for Qt/Quickshell types, so it is disabled — qmlls
+-- handles local component and id-ref definitions correctly.
 local qmlSettings = {
 	cmd = { "qml-language-server" },
 	filetypes = { "qml" },
@@ -196,6 +234,7 @@ local qmlSettings = {
 		client.handlers["textDocument/diagnostic"] = function() end
 		-- upstream Go race in handler/inlayhints.go: concurrent map read/write
 		client.server_capabilities.inlayHintProvider = false
+		client.server_capabilities.definitionProvider = false
 	end,
 }
 
@@ -340,6 +379,12 @@ vim.api.nvim_create_autocmd("LspAttach", {
 			return
 		end
 		vim.cmd("highlight @comment gui=italic cterm=italic")
+
+		-- Buffer-local so it wins over NvChad's on_attach gd.
+		-- Snacks auto-confirms a single hit; opens a picker when there are several.
+		vim.keymap.set("n", "gd", function()
+			Snacks.picker.lsp_definitions()
+		end, { buffer = args.buf, desc = "Go to Definition" })
 	end,
 })
 

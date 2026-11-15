@@ -1,5 +1,6 @@
 return {
 	-- language / LSP
+	{ import = "plugins.lang.treesitter" },
 	{ import = "plugins.lang.ts-autotag" },
 	{ import = "plugins.lang.ts-comments" },
 	{ import = "plugins.lang.flutter-tools" },
@@ -7,6 +8,7 @@ return {
 	{ import = "plugins.base.mason" },
 	{ import = "plugins.base.lspconfig" },
 	{ import = "nvchad.blink.lazyspec" },
+	{ import = "plugins.lang.blink" },
 
 	-- ui
 	{ import = "plugins.ui.snacks" },
@@ -14,7 +16,7 @@ return {
 	{ import = "plugins.ui.todo-comments" },
 	{ import = "plugins.ui.floating-help" },
 	{ import = "plugins.ui.incline" },
-	{ import = "plugins.ui.tiny-inline-diagnostic" },
+	-- { import = "plugins.ui.tiny-inline-diagnostic" },
 	{ import = "plugins.ui.render-markdown" },
 	{ import = "plugins.ui.gitsigns" },
 	{ import = "plugins.ui.colorizer" },

@@ -1,5 +1,10 @@
 require("nvchad.options")
 
+-- local QML / Quickshell snippets (VSCode format, loaded by NvChad luasnip)
+vim.g.vscode_snippets_path = vim.fn.stdpath("config") .. "/snippets"
+-- Class completion expands to Type { … } + auto-import (configs/qml.lua). Set false to disable.
+vim.g.qml_expand_on_accept = true
+
 -- local o = vim.o
 local opt = vim.opt
 
@@ -12,6 +17,7 @@ opt.cursorline = true
 opt.relativenumber = true
 opt.colorcolumn = "80"
 opt.previewheight = 30
+opt.winborder = "rounded"
 
 -- editing
 opt.tabstop = 4
