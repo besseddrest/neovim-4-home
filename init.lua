@@ -1,6 +1,12 @@
 vim.g.base46_cache = vim.fn.stdpath("data") .. "/nvchad/base46/"
 vim.g.mapleader = " "
 
+-- Machine-local overrides, gitignored, optional. This has to load before
+-- lazy.setup() below: the NvChad spec is lazy=false, so its config() calls
+-- require("options") during setup, and anything set here (vim.g.indent_width)
+-- must already be in place by then.
+pcall(require, "local")
+
 -- bootstrap lazy and all plugins
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 
@@ -41,5 +47,3 @@ require("autocmds")
 vim.schedule(function()
 	require("mappings")
 end)
-
-pcall(require, "local")

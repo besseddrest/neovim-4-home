@@ -8,7 +8,7 @@ return {
 			html = { "prettier" },
 			javascript = { "prettier" },
 			javascriptreact = { "prettier" },
-			json = { "jsonlint" },
+			json = { "prettier" },
 			lua = { "stylua" },
 			mysql = { "sqlfluff" },
 			qml = { "qmlformat" },
@@ -20,12 +20,12 @@ return {
 			if vim.bo[bufnr].filetype == "markdown" then
 				return nil
 			end
-			return { lsp_fallback = true }
+			return { lsp_format = "fallback" }
 		end,
 		formatters = {
 			-- same prettier args as before (no print-width override)
 			prettier = {
-				prepend_args = { "--tab-width", "4", "--use-tabs", "false" },
+				prepend_args = { "--tab-width", tostring(vim.g.indent_width or 4), "--use-tabs", "false" },
 			},
 			-- PATH's qmlformat is Qt5 (shadowed by qt5-declarative); need Qt6
 			qmlformat = {

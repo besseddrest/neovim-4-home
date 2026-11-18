@@ -39,7 +39,4 @@ return {
       test = { "Identifier", "#FF00FF" },
     },
   },
-  config = function()
-    require("todo-comments").setup()
-  end,
 }

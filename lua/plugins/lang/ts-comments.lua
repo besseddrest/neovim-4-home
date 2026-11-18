@@ -10,8 +10,11 @@ return {
         "typescript",
         "tsx",
     },
+    -- NOTE: the plugin's option key is `lang`, not `langs`; these values
+    -- currently match its own defaults, so they are an explicit baseline
+    -- rather than an override.
     opts = {
-        langs = {
+        lang = {
             html = "<!-- %s -->",
             javascript = {
                 "// %s",                   -- default commentstring when no treesitter node matches
@@ -38,7 +41,4 @@ return {
     },
     -- event = "VeryLazy",
     enabled = vim.fn.has "nvim-0.10.0" == 1,
-    config = function(opts)
-        require("ts-comments").setup(opts)
-    end,
 }

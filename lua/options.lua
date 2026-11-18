@@ -14,10 +14,13 @@ opt.colorcolumn = "80"
 opt.previewheight = 30
 
 -- editing
-opt.tabstop = 4
-opt.shiftwidth = 4
+-- indent width is machine-local: 4 by default, lua/local.lua overrides it.
+-- conform (prettier) and ts_ls read the same vim.g.indent_width.
+local indent = vim.g.indent_width or 4
+opt.tabstop = indent
+opt.shiftwidth = indent
 opt.expandtab = true
-opt.softtabstop = 4
+opt.softtabstop = indent
 opt.wrap = true
 opt.linebreak = true
 opt.textwidth = 80

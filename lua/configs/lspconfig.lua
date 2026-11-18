@@ -1,5 +1,8 @@
 require("nvchad.configs.lspconfig").defaults()
 
+-- see lua/options.lua
+local indent = vim.g.indent_width or 4
+
 local servers = {
 	"html",
 	"cssls",
@@ -56,14 +59,14 @@ local tsSettings = {
 	settings = {
 		typescript = {
 			format = {
-				tabSize = 4,
-				indentSize = 4,
+				tabSize = indent,
+				indentSize = indent,
 			},
 		},
 		javascript = {
 			format = {
-				tabSize = 4,
-				indentSize = 4,
+				tabSize = indent,
+				indentSize = indent,
 			},
 		},
 	},
