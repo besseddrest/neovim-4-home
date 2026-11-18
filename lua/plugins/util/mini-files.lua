@@ -4,7 +4,7 @@ return {
 	lazy = true,
 	keys = {
 		{
-			"<S-n>",
+			"<A-n>",
 			function()
 				require("mini.files").open()
 			end,
