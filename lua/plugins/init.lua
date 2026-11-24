@@ -16,7 +16,7 @@ return {
 	{ import = "plugins.ui.todo-comments" },
 	{ import = "plugins.ui.floating-help" },
 	{ import = "plugins.ui.incline" },
-	-- { import = "plugins.ui.tiny-inline-diagnostic" },
+	{ import = "plugins.ui.tiny-inline-diagnostic" },
 	{ import = "plugins.ui.render-markdown" },
 	{ import = "plugins.ui.gitsigns" },
 	{ import = "plugins.ui.colorizer" },

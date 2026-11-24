@@ -82,42 +82,84 @@ return {
 		bigfile = { enabled = true },
 		dashboard = {
 			enabled = true,
-			-- preset = {
-			-- 	header = bloody,
-			-- },
+			preset = {
+				-- used when image placement is unavailable (herdr-app, etc.)
+				header = bloody,
+			},
 			sections = {
-				--
-				-- function()
-				-- 	local img = vim.fn.stdpath("config") .. "/lua/images/sandy-3up.png"
-				-- 	local f = io.open(img, "r")
-				-- 	local has_img = f and (f:close() or true)
-				-- 	if vim.fn.executable("chafa") == 1 and has_img then
-				-- 		return {
-				-- 		}
-				-- 	end
-				-- 	return { section = "header", padding = 2 }
-				-- end,
-				{
-					function()
-						local img = vim.fn.stdpath("config") .. "/lua/images/sandy-3up.png"
-						local placement = nil
-						return {
-							indent = 4,
-							render = function(self, pos)
-								if placement then
-									pcall(placement.close, placement)
+				function()
+					-- Terminals that can't paint snacks kitty images get ASCII.
+					-- herdr-app fakes TERM_PROGRAM=ghostty but rejects t=f path
+					-- transfers. Cool Retro Term has no kitty graphics at all.
+					-- HC_* can leak into a real Ghostty session; real Ghostty
+					-- always sets GHOSTTY_* / TERM_PROGRAM_VERSION, herdr does not.
+					local real_ghostty = vim.env.GHOSTTY_RESOURCES_DIR ~= nil
+						or vim.env.GHOSTTY_BIN_DIR ~= nil
+						or vim.env.GHOSTTY_SURFACE_ID ~= nil
+						or (vim.env.TERM_PROGRAM == "ghostty" and vim.env.TERM_PROGRAM_VERSION ~= nil)
+					local in_herdr = not real_ghostty
+						and (vim.env.HC_TERMINAL_ID ~= nil or vim.env.HC_TERMINAL_SOCKET ~= nil)
+
+					local function in_cool_retro_term()
+						local term_prog = (vim.env.TERM_PROGRAM or ""):lower()
+						local terminal = (vim.env.TERMINAL or ""):lower()
+						if term_prog:find("cool%-?retro", 1) or terminal:find("cool%-?retro", 1) then
+							return true
+						end
+						-- CRT often sets no TERM_PROGRAM; walk parents via /proc.
+						local pid = vim.fn.getpid()
+						for _ = 1, 10 do
+							local status = io.open("/proc/" .. pid .. "/status", "r")
+							if not status then
+								break
+							end
+							local ppid
+							for line in status:lines() do
+								ppid = line:match("^PPid:%s*(%d+)")
+								if ppid then
+									break
 								end
-								if Snacks.image and Snacks.image.supports(img) then
-									placement = Snacks.image.placement.new(self.buf, img, {
-										pos = { pos[1], pos[2] + 4 },
-										width = self.opts.width - 4,
-									})
-								end
-							end,
-							text = ("\n"):rep(3),
-						}
-					end,
-				},
+							end
+							status:close()
+							if not ppid or ppid == "0" then
+								break
+							end
+							pid = tonumber(ppid)
+							local comm = io.open("/proc/" .. pid .. "/comm", "r")
+							if not comm then
+								break
+							end
+							local name = (comm:read("*l") or ""):lower()
+							comm:close()
+							if name:find("cool%-?retro", 1) or name:find("coolretro", 1) then
+								return true
+							end
+						end
+						return false
+					end
+
+					if in_herdr or in_cool_retro_term() then
+						return { section = "header", padding = 1 }
+					end
+
+					local img = vim.fn.stdpath("config") .. "/lua/images/sandy-3up.png"
+					local placement = nil
+					return {
+						indent = 4,
+						render = function(self, pos)
+							if placement then
+								pcall(placement.close, placement)
+							end
+							if Snacks.image and Snacks.image.supports(img) then
+								placement = Snacks.image.placement.new(self.buf, img, {
+									pos = { pos[1], pos[2] + 4 },
+									width = self.opts.width - 4,
+								})
+							end
+						end,
+						text = ("\n"):rep(3),
+					}
+				end,
 				{ section = "keys", gap = 1, padding = 1 },
 				{ section = "startup" },
 			},
@@ -369,7 +411,6 @@ return {
 				-- Create some toggle mappings
 				Snacks.toggle.option("spell", { name = "Spelling" }):map("<leader>us")
 				Snacks.toggle.option("wrap", { name = "Wrap" }):map("<leader>uw")
-				Snacks.toggle.option("relativenumber", { name = "Relative Number" }):map("<leader>uL")
 				Snacks.toggle.diagnostics():map("<leader>ud")
 				Snacks.toggle.line_number():map("<leader>ul")
 				Snacks.toggle

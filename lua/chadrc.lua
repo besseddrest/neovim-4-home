@@ -12,6 +12,18 @@ M.base46 = {
   theme = "rosepine",
   transparency = true,
   telescope = { style = "bordered" },
+  -- base0F is #524f67 (same grey family as comments) — braces become unreadable in QML.
+  -- base04 is rose-pine subtle (#908caa): visible punctuation without competing with text.
+  hl_override = {
+    -- one_bg2 reads clearly over a transparent terminal; black2 is too close to void.
+    CursorLine = { bg = "one_bg2" },
+    ["@punctuation.bracket"] = { fg = "base04" },
+    ["@punctuation.delimiter"] = { fg = "base04" },
+  },
+}
+
+M.colorify = {
+  enabled = false,
 }
 
 M.cmp = {

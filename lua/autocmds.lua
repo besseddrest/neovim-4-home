@@ -73,6 +73,58 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 	command = [[ %s/\s\+$//e ]],
 })
 
+-- Cursor line fill — base46 transparency zeros CursorLine; paint after scheme load.
+local function paint_cursorline()
+	local bg = "#2d2b38"
+	local ok, base46 = pcall(require, "base46")
+	if ok then
+		local c = base46.get_theme_tb("base_30")
+		if c and c.one_bg2 then
+			bg = c.one_bg2
+		end
+	end
+	vim.api.nvim_set_hl(0, "CursorLine", { bg = bg })
+end
+
+vim.api.nvim_create_autocmd({ "ColorScheme", "VimEnter" }, {
+	desc = "Keep CursorLine bg filled (transparency-safe).",
+	group = augroup("CursorLineFill", { clear = true }),
+	callback = paint_cursorline,
+})
+vim.api.nvim_create_autocmd("User", {
+	pattern = "NvThemeReload",
+	group = "CursorLineFill",
+	callback = paint_cursorline,
+})
+
+-- Inline messages come from tiny-inline-diagnostic (wrap + hanging indent).
+-- Keep native VT off so they don't double up.
+vim.diagnostic.config({
+	virtual_text = false,
+	float = { border = "rounded", source = "if_many" },
+	underline = true,
+	severity_sort = true,
+})
+
+-- Absolute line numbers in insert; restore previous relativenumber on leave.
+vim.api.nvim_create_autocmd("InsertEnter", {
+	desc = "Absolute line numbers in insert mode.",
+	group = augroup("InsertAbsoluteNumbers", { clear = true }),
+	callback = function()
+		vim.w._rnu = vim.wo.relativenumber
+		vim.wo.relativenumber = false
+	end,
+})
+vim.api.nvim_create_autocmd("InsertLeave", {
+	desc = "Restore relativenumber after insert.",
+	group = "InsertAbsoluteNumbers",
+	callback = function()
+		if vim.w._rnu ~= nil then
+			vim.wo.relativenumber = vim.w._rnu
+		end
+	end,
+})
+
 
 -- NvimTree
 -- vim.api.nvim_create_autocmd("BufWinEnter", {

@@ -174,41 +174,25 @@ local qmlls_handlers = {
 	end,
 }
 
--- qmlls semantic token types that aren't in the standard LSP legend.
-local qml_semantic_links = {
-	["@lsp.type.qmlLocalId.qml"] = "Identifier",
-	["@lsp.type.qmlExternalId.qml"] = "Identifier",
-	["@lsp.type.qmlRootObjectProperty.qml"] = "Property",
-	["@lsp.type.qmlScopeObjectProperty.qml"] = "Property",
-	["@lsp.type.qmlExternalObjectProperty.qml"] = "Property",
-	["@lsp.type.qmlStateName.qml"] = "Constant",
-	["@lsp.type.jsScopeVar.qml"] = "Variable",
-	["@lsp.type.jsImportVar.qml"] = "Include",
-	["@lsp.type.jsGlobalVar.qml"] = "Constant",
-}
-
-local function link_qml_semantic_tokens()
-	for group, link in pairs(qml_semantic_links) do
-		vim.api.nvim_set_hl(0, group, { link = link, default = true })
-	end
-end
-
 -- Qt's official QML language server. Type aware, so it reports unknown
 -- properties, wrong types and unresolved imports. This is the ts_ls of QML.
 -- Hover is documentation-lookup only and returns empty without qdoc; mute it
 -- so the Go server owns hover. Definition of local components works well.
+--
+-- Semantic tokens are off: after edits qmlls mis-tags comment ranges as
+-- type/property (priority 125), which two-tones comments and muddies PathLine.
+-- Tree-sitter qmljs highlighting is enough without them.
 local qmllsSettings = {
 	cmd = { "/usr/bin/qmlls6", "--no-cmake-calls" },
 	filetypes = { "qml" },
 	root_dir = qml_root,
 	handlers = qmlls_handlers,
-	-- Override NvChad's "*" on_init so semantic tokens stay enabled.
 	on_init = function() end,
 	on_attach = function(client)
 		client.server_capabilities.hoverProvider = false
 		-- Go server owns completion (Class + module detail, property insertText).
 		client.server_capabilities.completionProvider = nil
-		link_qml_semantic_tokens()
+		client.server_capabilities.semanticTokensProvider = nil
 	end,
 }
 
@@ -388,5 +372,5 @@ vim.api.nvim_create_autocmd("LspAttach", {
 	end,
 })
 
-vim.diagnostic.config({})
+-- diagnostic highlights + virtual_text live in autocmds.lua (theme overrides)
 

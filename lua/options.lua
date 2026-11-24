@@ -14,6 +14,8 @@ opt.guicursor = "i-ci:ver25-blinkwait500-blinkon500-blinkoff500"
 opt.background = "dark"
 opt.signcolumn = "yes"
 opt.cursorline = true
+-- NvChad defaults this to "number" (gutter only). "both" fills the full line.
+opt.cursorlineopt = "both"
 opt.relativenumber = true
 opt.colorcolumn = "80"
 opt.previewheight = 30
