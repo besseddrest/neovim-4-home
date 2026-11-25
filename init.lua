@@ -13,6 +13,9 @@ vim.opt.rtp:prepend(lazypath)
 
 local lazy_config = require("plugins.base.lazy")
 
+-- Machine-local overrides, before specs are imported so they can read vim.g.
+pcall(require, "local")
+
 -- load plugins + config
 require("lazy").setup({
 	{
@@ -42,4 +45,3 @@ vim.schedule(function()
 	require("mappings")
 end)
 
-pcall(require, "local")

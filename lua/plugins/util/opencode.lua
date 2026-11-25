@@ -1,5 +1,7 @@
 return {
 	"sudo-tee/opencode.nvim",
+	-- Set vim.g.disable_opencode in lua/local.lua (gitignored) to skip on a machine.
+	enabled = not vim.g.disable_opencode,
 	-- No keys/cmd/ft triggers otherwise → lazy never loads it, so setup
 	-- (and default <leader>o maps) never run.
 	event = "VeryLazy",
