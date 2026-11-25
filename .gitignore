@@ -1,3 +1,23 @@
+# Local overrides
 */chatgpt.lua
 lua/local.lua
 instructions*
+
+# Logs
+*.log
+
+# Neovim runtime state
+spell/
+shada/
+*.shada
+
+# Editor / swap
+*.swp
+*.swo
+*~
+
+# macOS
+.DS_Store
+._*
+.Spotlight-V100
+.Trashes
