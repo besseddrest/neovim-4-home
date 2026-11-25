@@ -38,8 +38,16 @@ end, { desc = "Opens Diagostic messages in a floated tooltip" })
 
 -- gd is buffer-local on LspAttach (see configs/lspconfig.lua) so it wins over NvChad.
 map("n", "K", function()
+	if vim.bo.filetype == "qml" then
+		require("qml_docs").hover()
+		return
+	end
 	vim.lsp.buf.hover({ max_width = math.floor(vim.o.columns * 0.5) })
 end, { desc = "LSP Hover" })
+-- QML local docs layout: card (LSP-like) <-> raw markdown
+map("n", "<leader>kq", function()
+	require("qml_docs").toggle_style()
+end, { desc = "QML docs style card/raw" })
 map("n", "gr", function()
 	Snacks.picker.lsp_references({ unique_lines = true })
 end, { desc = "LSP References" })

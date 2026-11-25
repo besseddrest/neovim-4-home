@@ -2,15 +2,18 @@ return {
 	"NvChad/nvim-colorizer.lua",
 	event = "User FilePost",
 	opts = {
-		user_default_options = {
-			names = false,
-			RRGGBBAA = true,
-			mode = "background",
-		},
-		-- QML uses #AARRGGBB (alpha first). Don't also enable RRGGBBAA there —
-		-- 8-digit hex can't be both formats at once.
 		filetypes = {
 			"*",
+			-- conf/qml: #AARRGGBB (alpha first). CSS uses #RRGGBBAA — not both at once.
+			conf = {
+				parsers = {
+					hex = {
+						rrggbb = true,
+						rrggbbaa = false,
+						hash_aarrggbb = true,
+					},
+				},
+			},
 			qml = {
 				parsers = {
 					hex = {
@@ -27,10 +30,44 @@ return {
 					},
 				},
 			},
+			css = {
+				parsers = {
+					hex = {
+						rrggbbaa = true,
+						hash_aarrggbb = false,
+					},
+				},
+			},
+			html = {
+				parsers = {
+					hex = {
+						rrggbbaa = true,
+						hash_aarrggbb = false,
+					},
+				},
+			},
+		},
+		-- New structured opts (hash_aarrggbb is not available via legacy AARRGGBB —
+		-- that flag only enables 0xAARRGGBB).
+		options = {
+			parsers = {
+				names = { enable = false },
+				hex = {
+					rgb = true,
+					rgba = true,
+					rrggbb = true,
+					rrggbbaa = false,
+					hash_aarrggbb = true,
+				},
+			},
+			display = {
+				mode = "background",
+			},
 		},
 	},
 	config = function(_, opts)
-		-- Composite alpha over Normal bg instead of just darkening channels.
+		-- Composite alpha over a real bg. With transparency Normal.bg is NONE —
+		-- fall back to theme black so #AARRGGBB still resolves.
 		local color = require("colorizer.color")
 		local bg_cache
 
@@ -46,7 +83,13 @@ return {
 			elseif type(bg) == "string" then
 				hex = bg:gsub("^#", "")
 			else
-				hex = "000000"
+				local ok, base46 = pcall(require, "base46")
+				if ok then
+					local c = base46.get_theme_tb("base_30")
+					hex = (c and c.black or "#000000"):gsub("^#", "")
+				else
+					hex = "000000"
+				end
 			end
 			bg_cache = {
 				tonumber(hex:sub(1, 2), 16) or 0,

@@ -176,20 +176,24 @@ local qmlls_handlers = {
 
 -- Qt's official QML language server. Type aware, so it reports unknown
 -- properties, wrong types and unresolved imports. This is the ts_ls of QML.
--- Hover is documentation-lookup only and returns empty without qdoc; mute it
--- so the Go server owns hover. Definition of local components works well.
+-- Hover reads qdoc from docDir (--doc-dir + .qmlls.ini). Local qml_docs
+-- fallback covers Quickshell and anything qmlls still leaves empty.
 --
 -- Semantic tokens are off: after edits qmlls mis-tags comment ranges as
 -- type/property (priority 125), which two-tones comments and muddies PathLine.
 -- Tree-sitter qmljs highlighting is enough without them.
 local qmllsSettings = {
-	cmd = { "/usr/bin/qmlls6", "--no-cmake-calls" },
+	cmd = {
+		"/usr/bin/qmlls6",
+		"--no-cmake-calls",
+		"--doc-dir",
+		"/usr/share/doc/qt6",
+	},
 	filetypes = { "qml" },
 	root_dir = qml_root,
 	handlers = qmlls_handlers,
 	on_init = function() end,
 	on_attach = function(client)
-		client.server_capabilities.hoverProvider = false
 		-- Go server owns completion (Class + module detail, property insertText).
 		client.server_capabilities.completionProvider = nil
 		client.server_capabilities.semanticTokensProvider = nil
@@ -197,10 +201,11 @@ local qmllsSettings = {
 }
 
 -- Third party Go QML server. Knows Quickshell types, imports and snippets and
--- indexes workspace components across files. Owns hover. Diagnostics are parse
--- errors only, so they are muted to avoid doubling up with qmlls. Definition
--- jumps to the import line for Qt/Quickshell types, so it is disabled — qmlls
--- handles local component and id-ref definitions correctly.
+-- indexes workspace components across files. Hover is usually a one-line stub;
+-- qml_docs.hover() prefers qmlls/local prose via is_stub(). Diagnostics are
+-- parse errors only, so they are muted to avoid doubling up with qmlls.
+-- Definition jumps to the import line for Qt/Quickshell types, so it is
+-- disabled — qmlls handles local component and id-ref definitions correctly.
 local qmlSettings = {
 	cmd = { "qml-language-server" },
 	filetypes = { "qml" },
